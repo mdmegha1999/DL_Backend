@@ -14,7 +14,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 try {
-    mongoose.connect('mongodb://127.0.0.1:27017/drivingAssessmentDB', {
+    mongoose.connect('mongodb+srv://megha:tanu2010@atlascluster.9gyjmgf.mongodb.net/drivingAssessment?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
@@ -31,14 +31,23 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-
-const User = mongoose.model('User', {
+const UserSchema = new mongoose.Schema({
     name: String,
     address: String,
     contactDetails: String,
-    email: String,
+    email: { type: String, index: true, unique: true },
     password: String,
 });
+
+const User = mongoose.model('user', UserSchema);
+
+// const User = mongoose.model('user', {
+//     name: String,
+//     address: String,
+//     contactDetails: String,
+//     email: String,
+//     password: String,
+// });
 const authenticateUser = (req, res, next) => {
     if (req.session && req.session.userId) {
         return next();
